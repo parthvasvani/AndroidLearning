@@ -1,5 +1,6 @@
 package com.example.practical
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
@@ -27,15 +28,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        val btnToast = findViewById<Button>(R.id.btnShowToast)
-        btnToast.setOnClickListener {
-            Toast(this).apply {
-                duration = Toast.LENGTH_LONG
-                val clToast = null
-                this.view = layoutInflater.inflate(R.layout.custom_toast,clToast)
-                show()
+        val btnOpenActivity = findViewById<Button>(R.id.btnOpenActivity)
+        btnOpenActivity.setOnClickListener {
+            Intent(this,SecondActivity::class.java).also {
+                startActivity(it)
             }
         }
+
     }
 }
