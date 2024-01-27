@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.example.practical.databinding.ActivityMainBinding
 import java.util.Collections
 
@@ -27,24 +28,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        val btnOrder = findViewById<Button>(R.id.btnOrder)
-        btnOrder.setOnClickListener {
-            val rgoMeat = findViewById<RadioGroup>(R.id.rgMeat)
-            val checkedMeatRadioButtonId = rgoMeat.checkedRadioButtonId
-            val meat = findViewById<RadioButton>(checkedMeatRadioButtonId)
-            val cheese = findViewById<CheckBox>(R.id.cbCheese).isChecked
-            val onion = findViewById<CheckBox>(R.id.cbOnions).isChecked
-            val salad = findViewById<CheckBox>(R.id.cbSalad).isChecked
-            val orderString = "You ordered a burger with: \n" +
-                "${meat.text}" +
-                (if (cheese) "\nCheese" else "") +
-                (if (onion) "\nOnion" else "")  +
-                (if (salad) "\nSalad" else "")
-
-            val tvOrder = findViewById<TextView>(R.id.tvOrder)
-            tvOrder.text = orderString
+        val btnToast = findViewById<Button>(R.id.btnShowToast)
+        btnToast.setOnClickListener {
+            Toast(this).apply {
+                duration = Toast.LENGTH_LONG
+                val clToast = null
+                this.view = layoutInflater.inflate(R.layout.custom_toast,clToast)
+                show()
+            }
         }
-
-
     }
 }
