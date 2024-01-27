@@ -26,7 +26,8 @@ class MainActivity : AppCompatActivity() {
         val addImage = findViewById<Button>(R.id.btnAddImage)
         val ivImage = findViewById<ImageView>(R.id.ivImage)
         addImage.setOnClickListener {
-            ivImage.setImageResource(R.drawable.frog1)
+            //ivImage.setImageResource(R.drawable.frog1)
+            Log.d("Activity", "This is github example")
         }
 
 
