@@ -11,8 +11,11 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import com.example.practical.databinding.ActivityMainBinding
 import java.util.Collections
@@ -23,10 +26,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val addImage = findViewById<Button>(R.id.btnAddImage)
-        val ivImage = findViewById<ImageView>(R.id.ivImage)
-        addImage.setOnClickListener {
-            ivImage.setImageResource(R.drawable.frog1)
+
+        val btnOrder = findViewById<Button>(R.id.btnOrder)
+        btnOrder.setOnClickListener {
+            val rgoMeat = findViewById<RadioGroup>(R.id.rgMeat)
+            val checkedMeatRadioButtonId = rgoMeat.checkedRadioButtonId
+            val meat = findViewById<RadioButton>(checkedMeatRadioButtonId)
+            val cheese = findViewById<CheckBox>(R.id.cbCheese).isChecked
+            val onion = findViewById<CheckBox>(R.id.cbOnions).isChecked
+            val salad = findViewById<CheckBox>(R.id.cbSalad).isChecked
+            val orderString = "You ordered a burger with: \n" +
+                "${meat.text}" +
+                (if (cheese) "\nCheese" else "") +
+                (if (onion) "\nOnion" else "")  +
+                (if (salad) "\nSalad" else "")
+
+            val tvOrder = findViewById<TextView>(R.id.tvOrder)
+            tvOrder.text = orderString
         }
 
 
