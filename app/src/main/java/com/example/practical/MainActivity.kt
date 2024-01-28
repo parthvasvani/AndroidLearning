@@ -2,6 +2,7 @@ package com.example.practical
 
 import android.app.Person
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
@@ -20,27 +21,57 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.example.practical.databinding.ActivityMainBinding
 import java.util.Collections
+import android.Manifest
 
 class MainActivity : AppCompatActivity() {
+
+    private companion object {
+        private const val PERMISSION_REQUEST_CODE = 1
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnApply = findViewById<Button>(R.id.btApply)
-        btnApply.setOnClickListener {
-            var name = findViewById<EditText>(R.id.etName).text.toString()
-            var age = findViewById<EditText>(R.id.etAge).text.toString().toInt()
-            var country = findViewById<EditText>(R.id.etCountry).text.toString()
-            val person = Person(name, age, country)
-            Intent(this,SecondActivity::class.java).also {
-                it.putExtra("EXTRA_PERSON", person)
-                //it.putExtra("EXTRA_NAME",name)
-                //it.putExtra("EXTRA_AGE",age)
-                //it.putExtra("EXTRA_COUNTRY",country)
-                startActivity(it)
+        val btnRequestPermissions = findViewById<Button>(R.id.btnRequestPermissions)
+        btnRequestPermissions.setOnClickListener {
+            Log.d("MainActivity","Inside Button Click")
+            requestPermissions()
+
+        }
+    }
+
+    private fun hasWriteExternalStoragePermission() =
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+
+
+    private fun requestPermissions() {
+        var permissionsToRequest = mutableListOf<String>()
+        if (!hasWriteExternalStoragePermission()){
+            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
+            Log.d("MainActivity","RECORD AUDIO")
+        }
+
+        if (permissionsToRequest.isNotEmpty()){
+            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(),PERMISSION_REQUEST_CODE)
+            Log.d("MainActivity","Not Empty")
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty()){
+            for (i in grantResults.indices){
+                if (grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                    Log.d("PermissionRequest","${permissions[i]} granted.")
+                }
             }
         }
     }
