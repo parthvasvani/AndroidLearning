@@ -25,54 +25,34 @@ import androidx.core.app.ActivityCompat
 import com.example.practical.databinding.ActivityMainBinding
 import java.util.Collections
 import android.Manifest
+import android.app.Activity
 
 class MainActivity : AppCompatActivity() {
 
-    private companion object {
-        private const val PERMISSION_REQUEST_CODE = 1
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnRequestPermissions = findViewById<Button>(R.id.btnRequestPermissions)
-        btnRequestPermissions.setOnClickListener {
-            Log.d("MainActivity","Inside Button Click")
-            requestPermissions()
+        val btnTakePhoto = findViewById<Button>(R.id.btnTakePhoto)
+        btnTakePhoto.setOnClickListener {
+            Intent(Intent.ACTION_GET_CONTENT).also {
+                it.type = "image/*"
+                startActivityForResult(it, 0)
 
-        }
-    }
-
-    private fun hasWriteExternalStoragePermission() =
-        ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
-
-
-    private fun requestPermissions() {
-        var permissionsToRequest = mutableListOf<String>()
-        if (!hasWriteExternalStoragePermission()){
-            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
-            Log.d("MainActivity","RECORD AUDIO")
-        }
-
-        if (permissionsToRequest.isNotEmpty()){
-            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(),PERMISSION_REQUEST_CODE)
-            Log.d("MainActivity","Not Empty")
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty()){
-            for (i in grantResults.indices){
-                if (grantResults[i] == PackageManager.PERMISSION_GRANTED){
-                    Log.d("PermissionRequest","${permissions[i]} granted.")
-                }
             }
         }
     }
-}
+
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (resultCode == Activity.RESULT_OK && requestCode == 0) {
+                val uri = data?.data
+                val ivPhoto = findViewById<ImageView>(R.id.ivPhoto)
+                ivPhoto.setImageURI(uri)
+            }
+        }
+
+    }
+
