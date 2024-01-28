@@ -1,5 +1,6 @@
 package com.example.practical
 
+import android.app.Person
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -28,12 +29,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnOpenActivity = findViewById<Button>(R.id.btnOpenActivity)
-        btnOpenActivity.setOnClickListener {
+        val btnApply = findViewById<Button>(R.id.btApply)
+        btnApply.setOnClickListener {
+            var name = findViewById<EditText>(R.id.etName).text.toString()
+            var age = findViewById<EditText>(R.id.etAge).text.toString().toInt()
+            var country = findViewById<EditText>(R.id.etCountry).text.toString()
+            val person = Person(name, age, country)
             Intent(this,SecondActivity::class.java).also {
+                it.putExtra("EXTRA_PERSON", person)
+                //it.putExtra("EXTRA_NAME",name)
+                //it.putExtra("EXTRA_AGE",age)
+                //it.putExtra("EXTRA_COUNTRY",country)
                 startActivity(it)
             }
         }
-
     }
 }
