@@ -31,6 +31,8 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,33 +41,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val customList = listOf("first", "second", "third", "fourth")
-        val adapter = ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, customList)
-        val spCustom = findViewById<Spinner>(R.id.spCustom)
-        spCustom.adapter = adapter
-        spCustom.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                Toast.makeText(this@MainActivity,
-                    "You selected ${p0?.getItemAtPosition(p2).toString()}",
-                    Toast.LENGTH_LONG).show()
-            }
+        val todoList = mutableListOf(
+            Todo("Follow ParthVasvani",false),
+            Todo("Breakfast",true),
+            Todo("Lunch",false),
+            Todo("Power Nap",false),
+            Todo("Dinner",false)
+        )
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+        val adapter = TodoAdapter(todoList)
+        val rvTodos = findViewById<RecyclerView>(R.id.rvTodos)
+        rvTodos.adapter = adapter
+        rvTodos.layoutManager = LinearLayoutManager(this)
 
-            }
+        val btnAddTodo = findViewById<Button>(R.id.btnAddtodo)
+        btnAddTodo.setOnClickListener {
+            val etTodo = findViewById<EditText>(R.id.etTodo)
+            val title = etTodo.text.toString()
+            val todo = Todo(title, false)
+            todoList.add(todo)
+            adapter.notifyItemInserted(todoList.size-1)
         }
 
-        val spMonths = findViewById<Spinner>(R.id.spMonths)
-        spMonths.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                Toast.makeText(this@MainActivity,
-                    "You selected ${adapterView?.getItemAtPosition(position).toString()}",
-                    Toast.LENGTH_LONG).show()
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-
-            }
-        }
     }
 }
