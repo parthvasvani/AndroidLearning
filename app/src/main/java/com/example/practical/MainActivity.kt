@@ -26,6 +26,7 @@ import com.example.practical.databinding.ActivityMainBinding
 import java.util.Collections
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,22 +35,60 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val addContactDialog = AlertDialog.Builder(this)
+            .setTitle("Add Contact")
+            .setMessage("Do you want to add Mr. Parth to your Contacts List")
+            .setIcon(R.drawable.ic_add_contact)
+            .setPositiveButton("Yes"){_,_ ->
+                Toast.makeText(this,"You added Mr. Parth to your Contact List",Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("No"){_,_ ->
+                Toast.makeText(this,"You didn't add Mr. Parth to your Contact List",Toast.LENGTH_SHORT).show()
+            }.create()
 
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.app_bar_menu,menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.miAddContact -> Toast.makeText(this, "You clicked on Add Contact",Toast.LENGTH_SHORT).show()
-            R.id.miFavorites -> Toast.makeText(this, "You clicked on Favorites",Toast.LENGTH_SHORT).show()
-            R.id.miSettings -> Toast.makeText(this, "You clicked on Settings",Toast.LENGTH_SHORT).show()
-            R.id.miClose -> finish()
-            R.id.miFeedback -> Toast.makeText(this, "You clicked on Feedback",Toast.LENGTH_SHORT).show()
+        val btnDialog1 = findViewById<Button>(R.id.btnDialog1)
+        btnDialog1.setOnClickListener {
+            addContactDialog.show()
         }
-        return true
+
+
+        val options = arrayOf("First Item", "Second Item", "Third Item")
+        val singleChoiceDialog = AlertDialog.Builder(this)
+            .setTitle("Choose one of these options")
+            .setSingleChoiceItems(options,0){dialogInterface, i ->
+                Toast.makeText(this,"You clicked on ${options[i]}",Toast.LENGTH_SHORT).show()
+            }
+            .setPositiveButton("Accept"){_,_ ->
+                Toast.makeText(this,"You accepted the SingleChoiceDialog",Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Decline"){_,_ ->
+                Toast.makeText(this,"You declined the SingleChoiceDialog",Toast.LENGTH_SHORT).show()
+            }.create()
+
+        val btnDialog2 = findViewById<Button>(R.id.btnDialog2)
+        btnDialog2.setOnClickListener {
+            singleChoiceDialog.show()
+        }
+
+        val multipleChoiceDialog = AlertDialog.Builder(this)
+            .setTitle("Choose one of these options")
+            .setMultiChoiceItems(options, booleanArrayOf(false,false,false)){_,i,isChecked->
+                if (isChecked){
+                    Toast.makeText(this,"You checked options at ${options[i]}",Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this,"You unchecked options at ${options[i]}",Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setPositiveButton("Accept"){_,_ ->
+                Toast.makeText(this,"You accepted the MultiChoiceDialog",Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Decline"){_,_ ->
+                Toast.makeText(this,"You declined the MultiChoiceDialog",Toast.LENGTH_SHORT).show()
+            }.create()
+
+        val btnDialog3 = findViewById<Button>(R.id.btnDialog3)
+        btnDialog3.setOnClickListener {
+            multipleChoiceDialog.show()
+        }
     }
 }
