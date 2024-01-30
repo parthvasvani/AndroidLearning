@@ -34,6 +34,7 @@ import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -43,31 +44,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val firstFragment = FirstFragment()
-        val secondFragment = SecondFragment()
-        val thirdFragment = ThirdFragment()
+        val images = listOf(
+            R.drawable.one,
+            R.drawable.two,
+            R.drawable.three,
+            R.drawable.four,
+            R.drawable.five,
+            R.drawable.six,
+            R.drawable.seven
+        )
 
-        setCurrentFragment(firstFragment)
+        val adapter = ViewPagerAdapter(images)
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        viewPager.adapter = adapter
 
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.setOnNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.miHome -> setCurrentFragment(firstFragment)
-                R.id.miMessages -> setCurrentFragment(secondFragment)
-                R.id.miProfile -> setCurrentFragment(thirdFragment)
-            }
-            true
-        }
+        viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
 
-        bottomNavigationView.getOrCreateBadge(R.id.miMessages).apply {
-            number = 10
-            isVisible = true
+        viewPager.beginFakeDrag()
+        viewPager.fakeDragBy(-10f)
+        viewPager.endFakeDrag()
         }
     }
-
-    private fun setCurrentFragment(fragment: Fragment) =
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment,fragment)
-            commit()
-        }
-}
