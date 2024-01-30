@@ -31,8 +31,10 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,28 +45,29 @@ class MainActivity : AppCompatActivity() {
 
         val firstFragment = FirstFragment()
         val secondFragment = SecondFragment()
+        val thirdFragment = ThirdFragment()
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment,firstFragment)
-            commit()
+        setCurrentFragment(firstFragment)
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.miHome -> setCurrentFragment(firstFragment)
+                R.id.miMessages -> setCurrentFragment(secondFragment)
+                R.id.miProfile -> setCurrentFragment(thirdFragment)
+            }
+            true
         }
 
-        val btnFirstFragment = findViewById<Button>(R.id.btnFragment1)
-        btnFirstFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.flFragment,firstFragment)
-                addToBackStack(null)
-                commit()
-            }
-        }
-
-        val btnSecondFragment = findViewById<Button>(R.id.btnFragment2)
-        btnSecondFragment.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.flFragment,secondFragment)
-                addToBackStack(null)
-                commit()
-            }
+        bottomNavigationView.getOrCreateBadge(R.id.miMessages).apply {
+            number = 10
+            isVisible = true
         }
     }
+
+    private fun setCurrentFragment(fragment: Fragment) =
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.flFragment,fragment)
+            commit()
+        }
 }
