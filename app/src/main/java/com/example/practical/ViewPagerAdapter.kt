@@ -18,7 +18,7 @@ class ViewPagerAdapter(
 
     override fun onBindViewHolder(holder: ViewPagerViewHolder, position: Int) {
         val curImage = images[position]
-        holder.itemView.findViewById<ImageView>(R.id.ivImage).setImageResource(curImage)
+        holder.itemView.findViewById<ImageView>(R.id.ivImage).setImageResource(curImage )
     }
 
     override fun getItemCount(): Int {

@@ -36,6 +36,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.Tab
+import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,10 +61,24 @@ class MainActivity : AppCompatActivity() {
         val viewPager = findViewById<ViewPager2>(R.id.viewPager)
         viewPager.adapter = adapter
 
-        viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        TabLayoutMediator(tabLayout, viewPager){ tab, position ->
+            tab.text = "Tab ${position + 1}"
+        }.attach()
 
-        viewPager.beginFakeDrag()
-        viewPager.fakeDragBy(-10f)
-        viewPager.endFakeDrag()
-        }
+        tabLayout.addOnTabSelectedListener(object:TabLayout.OnTabSelectedListener{
+            override fun onTabSelected(tab: Tab?) {
+                Toast.makeText(this@MainActivity,"Selected ${tab?.text}",Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onTabUnselected(tab: Tab?) {
+                Toast.makeText(this@MainActivity,"Unselected ${tab?.text}",Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onTabReselected(tab: Tab?) {
+                Toast.makeText(this@MainActivity,"Reselected ${tab?.text}",Toast.LENGTH_SHORT).show()
+            }
+        })
+
     }
+}
