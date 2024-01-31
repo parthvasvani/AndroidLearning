@@ -54,53 +54,27 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
-    val CHANNEL_ID = "ChannelID"
-    val CHANNEL_NAME = "ChannelName"
-    val NOTIFICATION_ID = 0
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        createNotificationChannel()
-
-        val intent = Intent(this, MainActivity::class.java)
-        val pendingIntent = TaskStackBuilder.create(this).run {
-            addNextIntentWithParentStack(intent)
-            getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Awesome Notification")
-            .setContentText("This is Context Text")
-            .setSmallIcon(R.drawable.ic_star)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        val notificationManager = NotificationManagerCompat.from(this)
-
-        val btnNotification = findViewById<Button>(R.id.btnNotification)
-        btnNotification.setOnClickListener {
-            notificationManager.notify(NOTIFICATION_ID, notification)
-
-        }
-    }
-        fun createNotificationChannel(){
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_DEFAULT).apply {
-                        lightColor = Color.GREEN
-                        enableLights(true)
-                }
-
-                val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                manager.createNotificationChannel(channel)
-
+        val btnStartService = findViewById<Button>(R.id.btnStartService)
+        val tvServiceInfo = findViewById<TextView>(R.id.tvServiceInfo)
+        btnStartService.setOnClickListener {
+            Intent(this,MyIntentService::class.java).also {
+                startService(it)
+                tvServiceInfo.text = "Service Running"
             }
         }
 
-
+        val btnStopService = findViewById<Button>(R.id.btnStopService)
+        btnStopService.setOnClickListener {
+            MyIntentService.stopService()
+            tvServiceInfo.text = "Service Stopped"
+        }
+     }
 }
 
 
