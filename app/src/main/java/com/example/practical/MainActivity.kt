@@ -31,12 +31,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import android.view.DragEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.NotificationCompat
@@ -60,34 +65,60 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnStartService = findViewById<Button>(R.id.btnStartService)
-        val tvServiceInfo = findViewById<TextView>(R.id.tvServiceInfo)
-        btnStartService.setOnClickListener {
-            Intent(this,MyService::class.java).also {
-                startService(it)
-                tvServiceInfo.text = "Service Running"
-            }
-        }
+        val llTop = findViewById<LinearLayout>(R.id.llTop)
+        val llBottom = findViewById<LinearLayout>(R.id.llBottom)
+        llTop.setOnDragListener(dragListener)
+        llBottom.setOnDragListener(dragListener)
+        val dragView = findViewById<View>(R.id.dragView)
+        dragView.setOnLongClickListener{
+            val clipText = "This is our ClipData text"
+            val item = ClipData.Item(clipText)
+            val mimeType = arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN)
+            val data = ClipData(clipText, mimeType, item)
 
-        val btnStopService = findViewById<Button>(R.id.btnStopService)
-        btnStopService.setOnClickListener {
-            Intent(this,MyService::class.java).also {
-                stopService(it)
-                tvServiceInfo.text = "Service Stopped"
-            }
-        }
+            val dragShadowBuilder = View.DragShadowBuilder(it)
+            it.startDragAndDrop(data, dragShadowBuilder, it, 0)
 
-        val btnSendData = findViewById<Button>(R.id.btnSendData)
-        btnSendData.setOnClickListener {
-            Intent(this,MyService::class.java).also {
-                val etData = findViewById<EditText>(R.id.etData)
-                val dataString = etData.text.toString()
-                it.putExtra("EXTRA DATA",dataString)
-                startService(it)
-
-            }
+            it.visibility = View.INVISIBLE
+            true
         }
      }
+
+    val dragListener = View.OnDragListener { view, event ->
+        when (event.action) {
+            DragEvent.ACTION_DRAG_STARTED -> {
+                event.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
+            }
+            DragEvent.ACTION_DRAG_ENTERED -> {
+                view.invalidate()
+                true
+            }
+            DragEvent.ACTION_DRAG_LOCATION -> true
+            DragEvent.ACTION_DRAG_EXITED -> {
+                view.invalidate()
+                true
+            }
+            DragEvent.ACTION_DROP -> {
+                val item = event.clipData.getItemAt(0)
+                val dragData = item.text
+                Toast.makeText(this, dragData, Toast.LENGTH_SHORT).show()
+
+                val v = event.localState as View
+                val owner = v.parent as ViewGroup
+                owner.removeView(v)
+                val destination = view as LinearLayout
+                destination.addView(v)
+                v.visibility= View.VISIBLE
+                true
+            }
+            DragEvent.ACTION_DRAG_ENDED -> {
+                view.invalidate()
+                true
+            }
+            else -> false
+        }
+    }
+
 }
 
 
