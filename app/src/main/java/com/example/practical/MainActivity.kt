@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         val btnStartService = findViewById<Button>(R.id.btnStartService)
         val tvServiceInfo = findViewById<TextView>(R.id.tvServiceInfo)
         btnStartService.setOnClickListener {
-            Intent(this,MyIntentService::class.java).also {
+            Intent(this,MyService::class.java).also {
                 startService(it)
                 tvServiceInfo.text = "Service Running"
             }
@@ -71,8 +71,21 @@ class MainActivity : AppCompatActivity() {
 
         val btnStopService = findViewById<Button>(R.id.btnStopService)
         btnStopService.setOnClickListener {
-            MyIntentService.stopService()
-            tvServiceInfo.text = "Service Stopped"
+            Intent(this,MyService::class.java).also {
+                stopService(it)
+                tvServiceInfo.text = "Service Stopped"
+            }
+        }
+
+        val btnSendData = findViewById<Button>(R.id.btnSendData)
+        btnSendData.setOnClickListener {
+            Intent(this,MyService::class.java).also {
+                val etData = findViewById<EditText>(R.id.etData)
+                val dataString = etData.text.toString()
+                it.putExtra("EXTRA DATA",dataString)
+                startService(it)
+
+            }
         }
      }
 }
